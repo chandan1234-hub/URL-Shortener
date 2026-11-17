@@ -9,3 +9,12 @@ Goals of this project
 • Support custom aliases and optional expiry.
 • Be type-safe end to end with TypeScript and runtime validation.
 Non-goals (v1): user accounts, a dashboard UI, billing, QR codes. These appear in the roadmap.
+
+2. Development setup
+
+The project is split into a React + TypeScript frontend and an Express + TypeScript backend:
+
+- `frontend/` uses Vite.
+- `backend/` uses Express and runs TypeScript with `tsx` during development.
+
+Install dependencies from each folder with `npm install`. Start the frontend with `npm run dev` from `frontend/`, and start the backend with `npm run dev` from `backend/`. The backend exposes a health check at `/health`.
