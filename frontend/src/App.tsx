@@ -1,7 +1,8 @@
-import Shortener from './pages/shortener'
+import { RouterProvider } from 'react-router-dom'
+import { router } from './routes'
 
 function App() {
-  return <Shortener />
+  return <RouterProvider router={router} />
 }
 
 export default App
