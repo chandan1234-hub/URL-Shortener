@@ -1,38 +1,8 @@
 .shortener-page {
-  display: flex;
-  min-height: 100svh;
-  flex-direction: column;
-  padding: 28px clamp(20px, 6vw, 88px);
-}
-
-.shortener-header {
-  display: flex;
-  width: min(100%, 1120px);
-  margin-inline: auto;
-}
-
-.shortener-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--color-text);
-  font-size: 17px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  text-decoration: none;
-}
-
-.shortener-brand-icon {
-  width: 30px;
-  height: 30px;
-  color: var(--color-accent);
-}
-
-.shortener-main {
   display: grid;
-  flex: 1;
   place-items: center;
-  padding: 56px 0 100px;
+  flex: 1;
+  padding: clamp(64px, 9vw, 112px) 24px;
 }
 
 .shortener-content {
@@ -128,14 +98,16 @@
   line-height: 1.5;
 }
 
+.not-found-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 30px;
+}
+
 @media (max-width: 540px) {
   .shortener-page {
-    padding: 22px 20px;
-  }
-
-  .shortener-main {
-    place-items: start;
-    padding: clamp(88px, 18vh, 144px) 0 48px;
+    padding: 72px 20px;
   }
 
   .shortener-content h1 {
@@ -158,6 +130,12 @@
 
   .shortener-form button {
     width: 100%;
+  }
+
+  .not-found-links {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 8px;
   }
 }
 
