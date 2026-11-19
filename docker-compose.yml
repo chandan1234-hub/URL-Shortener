@@ -1,0 +1,41 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: "3000"
+      HOST: "0.0.0.0"
+      # Required only when Prisma is used. The health server starts without it.
+      # Point this at your own PostgreSQL 15+ instance. Not baked into the image.
+      DATABASE_URL: ${DATABASE_URL:-}
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3000/health').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # Browser calls must use a host-reachable URL (published backend port).
+        # http://backend:3000 only resolves inside the Compose network.
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:3000}
+    ports:
+      - "5173:5173"
+    environment:
+      BACKEND_URL: http://backend:3000
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
