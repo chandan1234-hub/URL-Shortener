@@ -7,6 +7,8 @@ app.get("/health", (_request, response) => {
   response.json({ status: "ok" });
 });
 
-app.listen(port, () => {
-  console.log(`Backend listening on http://localhost:${port}`);
+const host = process.env.HOST ?? "0.0.0.0";
+
+app.listen(port, host, () => {
+  console.log(`Backend listening on http://${host}:${port}`);
 });
