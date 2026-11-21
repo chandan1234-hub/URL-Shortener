@@ -11,6 +11,10 @@
     "User": {
       "model": "User",
       "namespace": "public"
+    },
+    "VisitHistory": {
+      "model": "VisitHistory",
+      "namespace": "public"
     }
   },
   "domain": {
@@ -61,7 +65,7 @@
                 }
               },
               "user_id": {
-                "nullable": false,
+                "nullable": true,
                 "type": {
                   "codecId": "pg/int4@1",
                   "kind": "scalar"
@@ -71,7 +75,7 @@
             "relations": {
               "user": {
                 "cardinality": "N:1",
-                "nullable": false,
+                "nullable": true,
                 "on": {
                   "localFields": [
                     "user_id"
@@ -82,6 +86,21 @@
                 },
                 "to": {
                   "model": "User",
+                  "namespace": "public"
+                }
+              },
+              "visitHistory": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "short_url_id"
+                  ]
+                },
+                "to": {
+                  "model": "VisitHistory",
                   "namespace": "public"
                 }
               }
@@ -190,6 +209,77 @@
               "namespaceId": "public",
               "table": "User"
             }
+          },
+          "VisitHistory": {
+            "fields": {
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "referrer": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "short_url_id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "timestamp": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              }
+            },
+            "relations": {
+              "short_url": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "short_url_id"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "ShortUrl",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "id": {
+                  "column": "id"
+                },
+                "referrer": {
+                  "column": "referrer"
+                },
+                "short_url_id": {
+                  "column": "short_url_id"
+                },
+                "timestamp": {
+                  "column": "timestamp"
+                }
+              },
+              "namespaceId": "public",
+              "table": "VisitHistory"
+            }
           }
         }
       }
@@ -244,7 +334,7 @@
                 "user_id": {
                   "codecId": "pg/int4@1",
                   "dataType": "pg/int4",
-                  "nullable": false
+                  "nullable": true
                 }
               },
               "foreignKeys": [
@@ -344,6 +434,78 @@
                   ]
                 }
               ]
+            },
+            "VisitHistory": {
+              "columns": {
+                "id": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "default": {
+                    "expression": "autoincrement()",
+                    "kind": "function"
+                  },
+                  "nullable": false
+                },
+                "referrer": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
+                },
+                "short_url_id": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": false
+                },
+                "timestamp": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "foreignKeys": [
+                {
+                  "index": {
+                    "name": "VisitHistory_short_url_id_idx_f87f6d2f"
+                  },
+                  "source": {
+                    "columns": [
+                      "short_url_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "VisitHistory"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "ShortUrl"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "short_url_id"
+                  ],
+                  "name": "VisitHistory_short_url_id_idx_f87f6d2f",
+                  "prefix": "VisitHistory_short_url_id_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": []
             }
           }
         },
@@ -351,10 +513,10 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "91c160dcdc5edcf7c5080761d93d16a278ad001f18b953499751abc75d27809f"
+    "storageHash": "99c5e70f92f82307afd392de5568f0724f97cd9d43f2a0461730d81eda95537d"
   },
   "execution": {
-    "executionHash": "59ce364bc3554d58e4063793808809504882392be2af4e609f1d3d80b27f369c",
+    "executionHash": "2252a3de47953031b4894419d9bec870b9de010176e85970701ec710300e51a9",
     "mutations": {
       "defaults": [
         {
@@ -382,6 +544,20 @@
           "ref": {
             "entry": "User",
             "field": "created_at",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "VisitHistory",
+            "field": "timestamp",
             "namespace": "public"
           }
         }
