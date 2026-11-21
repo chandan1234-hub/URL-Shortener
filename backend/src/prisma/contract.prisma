@@ -10,11 +10,20 @@ model User {
 }
 
 model ShortUrl {
-  id         Int       @id @default(autoincrement())
-  user_id    Int
-  short_code String    @unique @map("shortCode")
-  long_url   String    @map("targetUrl")
-  expires_at DateTime? @map("expiresAt")
-  created_at DateTime  @default(now()) @onCreate(now()) @map("createdAt")
-  user       User      @relation(fields: [user_id], references: [id])
+  id              Int            @id @default(autoincrement())
+  user_id         Int?
+  short_code      String         @unique @map("shortCode")
+  long_url        String         @map("targetUrl")
+  expires_at      DateTime?      @map("expiresAt")
+  created_at      DateTime       @default(now()) @onCreate(now()) @map("createdAt")
+  user         User?          @relation(fields: [user_id], references: [id])
+  visitHistory VisitHistory[]
+}
+
+model VisitHistory {
+  id           Int      @id @default(autoincrement())
+  short_url_id Int
+  timestamp    DateTime @default(now()) @onCreate(now())
+  referrer     String?
+  short_url    ShortUrl @relation(fields: [short_url_id], references: [id])
 }
