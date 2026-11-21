@@ -23,9 +23,9 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'91c160dcdc5edcf7c5080761d93d16a278ad001f18b953499751abc75d27809f'>;
+  StorageHashBase<'99c5e70f92f82307afd392de5568f0724f97cd9d43f2a0461730d81eda95537d'>;
 export type ExecutionHash =
-  ExecutionHashBase<'59ce364bc3554d58e4063793808809504882392be2af4e609f1d3d80b27f369c'>;
+  ExecutionHashBase<'2252a3de47953031b4894419d9bec870b9de010176e85970701ec710300e51a9'>;
 export type ProfileHash =
   ProfileHashBase<'3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2'>;
 
@@ -316,8 +316,9 @@ export namespace Models {
     long_url: FieldOutputTypes['public']['ShortUrl']['long_url'];
     short_code: FieldOutputTypes['public']['ShortUrl']['short_code'];
     user_id: FieldOutputTypes['public']['ShortUrl']['user_id'];
-    user: public_User;
-    readonly [RelationKeys]?: 'user';
+    user: public_User | null;
+    visitHistory: public_VisitHistory[];
+    readonly [RelationKeys]?: 'user' | 'visitHistory';
   };
   export type public_User = {
     created_at: FieldOutputTypes['public']['User']['created_at'];
@@ -328,12 +329,21 @@ export namespace Models {
     short_urls: public_ShortUrl[];
     readonly [RelationKeys]?: 'short_urls';
   };
+  export type public_VisitHistory = {
+    id: FieldOutputTypes['public']['VisitHistory']['id'];
+    referrer: FieldOutputTypes['public']['VisitHistory']['referrer'];
+    short_url_id: FieldOutputTypes['public']['VisitHistory']['short_url_id'];
+    timestamp: FieldOutputTypes['public']['VisitHistory']['timestamp'];
+    short_url: public_ShortUrl;
+    readonly [RelationKeys]?: 'short_url';
+  };
 }
 
 export declare const models: {
   public: {
     ShortUrl: Models.public_ShortUrl;
     User: Models.public_User;
+    VisitHistory: Models.public_VisitHistory;
   };
 };
 
@@ -397,7 +407,7 @@ type ContractBase = Omit<
                 readonly user_id: {
                   readonly dataType: 'pg/int4';
                   readonly codecId: 'pg/int4@1';
-                  readonly nullable: false;
+                  readonly nullable: true;
                   readonly many: false;
                 };
               };
@@ -470,6 +480,64 @@ type ContractBase = Omit<
               indexes: readonly [];
               foreignKeys: readonly [];
             };
+            readonly VisitHistory: {
+              columns: {
+                readonly id: {
+                  readonly dataType: 'pg/int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'function';
+                    readonly expression: 'autoincrement()';
+                  };
+                  readonly many: false;
+                };
+                readonly referrer: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
+                  readonly many: false;
+                };
+                readonly short_url_id: {
+                  readonly dataType: 'pg/int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly timestamp: {
+                  readonly dataType: 'pg/timestamptz';
+                  readonly codecId: 'pg/timestamptz-date@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                  readonly typeParams: { readonly precision: 3 };
+                  readonly many: false;
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [];
+              indexes: readonly [
+                {
+                  readonly name: 'VisitHistory_short_url_id_idx_f87f6d2f';
+                  readonly prefix: 'VisitHistory_short_url_id_idx';
+                  readonly columns: readonly ['short_url_id'];
+                  readonly unique: false;
+                },
+              ];
+              foreignKeys: readonly [
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'VisitHistory';
+                    readonly columns: readonly ['short_url_id'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'ShortUrl';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+              ];
+            };
           };
         };
       };
@@ -483,6 +551,10 @@ type ContractBase = Omit<
   readonly roots: {
     readonly ShortUrl: { readonly namespace: 'public' & NamespaceId; readonly model: 'ShortUrl' };
     readonly User: { readonly namespace: 'public' & NamespaceId; readonly model: 'User' };
+    readonly VisitHistory: {
+      readonly namespace: 'public' & NamespaceId;
+      readonly model: 'VisitHistory';
+    };
   };
   readonly domain: {
     readonly namespaces: {
@@ -519,7 +591,7 @@ type ContractBase = Omit<
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
               readonly user_id: {
-                readonly nullable: false;
+                readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
               };
             };
@@ -527,10 +599,21 @@ type ContractBase = Omit<
               readonly user: {
                 readonly to: { readonly namespace: 'public' & NamespaceId; readonly model: 'User' };
                 readonly cardinality: 'N:1';
-                readonly nullable: false;
+                readonly nullable: true;
                 readonly on: {
                   readonly localFields: readonly ['user_id'];
                   readonly targetFields: readonly ['id'];
+                };
+              };
+              readonly visitHistory: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'VisitHistory';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['short_url_id'];
                 };
               };
             };
@@ -599,6 +682,54 @@ type ContractBase = Omit<
               };
             };
           };
+          readonly VisitHistory: {
+            readonly fields: {
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly referrer: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly short_url_id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly timestamp: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-date@1';
+                  readonly typeParams: { readonly precision: 3 };
+                };
+              };
+            };
+            readonly relations: {
+              readonly short_url: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'ShortUrl';
+                };
+                readonly cardinality: 'N:1';
+                readonly nullable: false;
+                readonly on: {
+                  readonly localFields: readonly ['short_url_id'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+            };
+            readonly storage: {
+              readonly table: 'VisitHistory';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly id: { readonly column: 'id' };
+                readonly referrer: { readonly column: 'referrer' };
+                readonly short_url_id: { readonly column: 'short_url_id' };
+                readonly timestamp: { readonly column: 'timestamp' };
+              };
+            };
+          };
         };
       };
     };
@@ -657,6 +788,18 @@ type ContractBase = Omit<
           readonly ref: {
             readonly entry: 'User';
             readonly field: 'created_at';
+            readonly namespace: 'public';
+          };
+        },
+        {
+          readonly onCreate: {
+            readonly id: 'timestampNow';
+            readonly kind: 'generator';
+            readonly params: { readonly precision: 3 };
+          };
+          readonly ref: {
+            readonly entry: 'VisitHistory';
+            readonly field: 'timestamp';
             readonly namespace: 'public';
           };
         },
