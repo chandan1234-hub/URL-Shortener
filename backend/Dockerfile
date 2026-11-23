@@ -1,5 +1,3 @@
-# Node 22 matches backend packages that require >=22.
-# This repo does not pin a Node version in package.json.
 FROM node:22-alpine AS build
 
 WORKDIR /app
