@@ -1,13 +1,4 @@
 node_modules
 dist
-.git
 .env
-.env.*
-*.log
-npm-debug.log*
-coverage
-.nyc_output
-*.tsbuildinfo
-*.db
-*.sqlite
-*.sqlite3
+.git
