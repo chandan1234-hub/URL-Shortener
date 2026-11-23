@@ -1,16 +1,22 @@
 # Backend
 
-The backend uses Express and Prisma ORM with PostgreSQL 15 or newer.
+The backend is a TypeScript Express API backed by PostgreSQL through Prisma ORM.
 
-## Database setup
+## Configuration
 
-1. Set `DATABASE_URL` in `.env` to your PostgreSQL connection string. For a new setup, start from `.env.example`.
-2. Define models in [`src/prisma/contract.prisma`](src/prisma/contract.prisma).
-3. Run `npm run contract:emit` to generate the contract files.
-4. Run `npm run db:init` to create the contract's tables in the configured database. This command is additive and stops on incompatible changes.
+Set `DATABASE_URL` to a PostgreSQL connection string before creating or resolving
+short URLs. `PUBLIC_URL` is optional and sets the base URL returned when creating
+a short link; otherwise, the request's protocol and host are used. `PORT` and
+`HOST` configure the HTTP server.
 
 ## Development
 
-- `npm run dev` — start the Express server.
+- `npm install` — install dependencies.
+- `npm run dev` — start the API with watch mode.
 - `npm run typecheck` — type-check the backend.
-- `npm run build` — compile the backend.
+- `npm run build` — compile the backend to `dist/`.
+
+The API exposes `GET /health`, `POST /api/shorten` with a JSON body containing a
+valid HTTP(S) `url`, and `GET /:shortCode` to redirect to the saved destination.
+Invalid request bodies return `400`; unknown and expired links return `404` and
+`410`, respectively.
