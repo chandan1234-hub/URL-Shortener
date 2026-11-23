@@ -18,48 +18,38 @@ export const createShortUrl: RequestHandler<
   unknown,
   CreateShortUrlBody
 > = async (request, response) => {
-  try {
-    const shortCode = nanoid(8);
-    const shortUrl = await persistShortUrl(request.body.url, shortCode);
-    const publicUrl = process.env.PUBLIC_URL?.replace(/\/+$/, "");
-    const host = request.get("host");
+  const shortCode = nanoid(8);
+  const shortUrl = await persistShortUrl(request.body.url, shortCode);
+  const publicUrl = process.env["PUBLIC_URL"]?.replace(/\/+$/, "");
+  const host = request.get("host");
 
-    if (!publicUrl && !host) {
-      response.status(500).json({ error: "Unable to determine the public URL." });
-      return;
-    }
-
-    response.status(201).json({
-      shortCode: shortUrl.short_code,
-      shortUrl: `${publicUrl ?? `${request.protocol}://${host}`}/${shortUrl.short_code}`,
-      longUrl: shortUrl.long_url,
-    });
-  } catch (error) {
-    console.error("Failed to create short URL:", error);
-    response.status(500).json({ error: "Failed to create short URL." });
+  if (!publicUrl && !host) {
+    response.status(500).json({ error: "Unable to determine the public URL." });
+    return;
   }
+
+  response.status(201).json({
+    shortCode: shortUrl.short_code,
+    shortUrl: `${publicUrl ?? `${request.protocol}://${host}`}/${shortUrl.short_code}`,
+    longUrl: shortUrl.long_url,
+  });
 };
 
 export const redirectToLongUrl: RequestHandler<ShortCodeParams> = async (
   request: Request<ShortCodeParams>,
   response: Response,
 ) => {
-  try {
-    const shortUrl = await findShortUrl(request.params.shortCode);
+  const shortUrl = await findShortUrl(request.params.shortCode);
 
-    if (!shortUrl) {
-      response.status(404).json({ error: "Short URL not found." });
-      return;
-    }
-
-    if (shortUrl.expires_at && shortUrl.expires_at <= new Date()) {
-      response.status(410).json({ error: "Short URL has expired." });
-      return;
-    }
-
-    response.redirect(302, shortUrl.long_url);
-  } catch (error) {
-    console.error("Failed to resolve short URL:", error);
-    response.status(500).json({ error: "Failed to resolve short URL." });
+  if (!shortUrl) {
+    response.status(404).json({ error: "Short URL not found." });
+    return;
   }
+
+  if (shortUrl.expires_at && shortUrl.expires_at <= new Date()) {
+    response.status(410).json({ error: "Short URL has expired." });
+    return;
+  }
+
+  response.redirect(302, shortUrl.long_url);
 };
