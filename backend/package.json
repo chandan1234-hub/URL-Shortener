@@ -1,7 +1,8 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
+  "private": true,
+  "description": "TypeScript API for Shortener",
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
@@ -11,10 +12,10 @@
     "contract:emit": "prisma contract emit",
     "db:init": "prisma db init"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "dependencies": {
     "@prisma/orm-postgres": "^8.0.0-rc.24",
     "dotenv": "^18.0.10",
