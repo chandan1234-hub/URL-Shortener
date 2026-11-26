@@ -1,5 +1,12 @@
 # React + TypeScript + Vite
 
+## Connect to the backend
+
+The shortener form sends `POST /api/shorten` to the URL in `VITE_API_URL`.
+For local development it defaults to `http://localhost:3000`. Set
+`VITE_API_URL` when the backend is hosted elsewhere; this value is included at
+build time, so rebuild the frontend after changing it.
+
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
 Currently, two official plugins are available:
