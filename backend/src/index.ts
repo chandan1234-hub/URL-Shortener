@@ -7,6 +7,23 @@ const host = process.env["HOST"] ?? "0.0.0.0";
 
 app.use(express.json());
 
+app.use("/api", (request, response, next) => {
+  response.setHeader("Access-Control-Allow-Origin", "*");
+  response.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  if (request.method === "OPTIONS") {
+    response.sendStatus(204);
+    return;
+  }
+
+  next();
+});
+
+app.get("/", (_request, response) => {
+  response.json({ message: "Welcome to the URL Shortener API." });
+});
+
 app.get("/health", (_request, response) => {
   response.json({ status: "ok" });
 });
@@ -30,5 +47,5 @@ const errorHandler: ErrorRequestHandler = (error, _request, response, _next) => 
 app.use(errorHandler);
 
 app.listen(port, host, () => {
-  console.log(`Backend listening on http://${host}:${port}`);
+  console.log(`Backend listening on http://localhost:${port}`);
 });
