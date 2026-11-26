@@ -7,8 +7,8 @@ services:
     environment:
       PORT: "3000"
       HOST: "0.0.0.0"
-      # Required only when Prisma is used. The health server starts without it.
-      # Point this at your own PostgreSQL 15+ instance. Not baked into the image.
+      # Required for creating and resolving short URLs; point this at your own
+      # PostgreSQL 15+ instance. The health endpoint starts without it.
       DATABASE_URL: ${DATABASE_URL:-}
     healthcheck:
       test:
@@ -28,13 +28,11 @@ services:
     build:
       context: ./frontend
       args:
-        # Browser calls must use a host-reachable URL (published backend port).
-        # http://backend:3000 only resolves inside the Compose network.
+        # The shortener UI calls this API URL from the user's browser.
+        # Use a host-reachable URL; Compose service names only resolve inside Docker.
         VITE_API_URL: ${VITE_API_URL:-http://localhost:3000}
     ports:
       - "5173:5173"
-    environment:
-      BACKEND_URL: http://backend:3000
     depends_on:
       backend:
         condition: service_healthy
