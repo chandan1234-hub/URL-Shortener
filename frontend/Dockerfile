@@ -11,7 +11,7 @@ COPY index.html vite.config.ts tsconfig.json tsconfig.app.json tsconfig.node.jso
 COPY public ./public
 COPY src ./src
 
-# Vite inlines VITE_* variables at build time. The UI does not read this yet.
+# Vite inlines VITE_* variables at build time; the shortener API client reads this value.
 ARG VITE_API_URL=http://localhost:3000
 ENV VITE_API_URL=$VITE_API_URL
 
