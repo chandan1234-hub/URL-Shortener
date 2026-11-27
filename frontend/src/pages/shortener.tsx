@@ -97,7 +97,7 @@ function Shortener() {
       <section className="shortener-content" aria-labelledby="shortener-title">
         <h1 id="shortener-title">Shorten a URL</h1>
         <p className="shortener-description">
-          Enter the long link you want to make easier to share.
+          Paste the full web address below. It will be converted into a compact link.
         </p>
 
         <form
