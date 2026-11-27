@@ -2,20 +2,25 @@
   display: grid;
   place-items: center;
   flex: 1;
+  width: 100%;
+  min-width: 0;
   padding: clamp(64px, 9vw, 112px) 24px;
 }
 
 .shortener-content {
+  min-width: 0;
   width: min(100%, 680px);
 }
 
 .shortener-content h1 {
   margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
   color: var(--color-text);
   font-size: clamp(38px, 6vw, 58px);
   font-weight: 650;
   letter-spacing: -0.045em;
   line-height: 1.08;
+  overflow-wrap: break-word;
 }
 
 .shortener-description {
@@ -27,7 +32,12 @@
 }
 
 .shortener-form {
-  margin-top: 44px;
+  margin-top: 36px;
+  padding: 24px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface);
+  box-shadow: 0 10px 24px rgb(70 49 35 / 7%);
 }
 
 .shortener-form label {
@@ -49,7 +59,7 @@
   height: 56px;
   padding: 0 16px;
   border: 1px solid var(--color-border);
-  border-radius: 12px;
+  border-radius: 8px;
   color: var(--color-text);
   background: var(--color-surface);
   font-size: 16px;
@@ -62,12 +72,12 @@
 }
 
 .shortener-form input:hover {
-  border-color: #aaa4ba;
+  border-color: var(--color-border-strong);
 }
 
 .shortener-form input:focus-visible {
   border-color: var(--color-accent);
-  outline-color: rgb(87 56 197 / 25%);
+  outline: 3px solid rgb(182 77 52 / 18%);
 }
 
 .shortener-form button {
@@ -75,7 +85,7 @@
   min-height: 56px;
   padding: 0 22px;
   border: 0;
-  border-radius: 12px;
+  border-radius: 8px;
   color: #fff;
   background: var(--color-accent);
   font-size: 15px;
@@ -88,7 +98,7 @@
 }
 
 .shortener-form button:active {
-  background: #38218a;
+  background: #7d3021;
 }
 
 .shortener-form button:disabled {
@@ -106,20 +116,20 @@
 .shortener-error {
   margin: 20px 0 0;
   padding: 14px 16px;
-  border: 1px solid #e8b8b8;
-  border-radius: 12px;
-  color: #8c2525;
-  background: #fff3f3;
+  border: 1px solid #d89b8c;
+  border-radius: 8px;
+  color: #812f20;
+  background: #fff5f0;
   line-height: 1.5;
 }
 
 .shortener-result {
   margin-top: 28px;
   padding: 22px;
-  border: 1px solid #d9d2f3;
-  border-radius: 16px;
-  background: #fff;
-  box-shadow: 0 12px 32px rgb(45 37 74 / 7%);
+  border: 1px solid #c99482;
+  border-radius: 10px;
+  background: var(--color-surface);
+  box-shadow: 0 10px 24px rgb(70 49 35 / 7%);
 }
 
 .shortener-result h2 {
@@ -149,7 +159,7 @@
   min-height: 42px;
   padding: 0 14px;
   border: 1px solid var(--color-border);
-  border-radius: 10px;
+  border-radius: 8px;
   color: var(--color-text);
   background: #fff;
   font-size: 14px;
