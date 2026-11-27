@@ -23,8 +23,8 @@ function Home() {
         <div className="home-copy">
           <h1 id="home-title">Long links, made easy to share.</h1>
           <p>
-            Turn a long web address into a shorter link that fits more naturally
-            wherever you share it.
+            Turn a long web address into a compact, shareable link that is easier
+            to read, send, and remember.
           </p>
           <NavLink className="home-primary-link" to={routePaths.shorten}>
             Shorten a link
