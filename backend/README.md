@@ -13,6 +13,7 @@ a short link; otherwise, the request's protocol and host are used. `PORT` and
 
 - `npm install` — install dependencies.
 - `npm run dev` — start the API with watch mode.
+- `npm run scale:dev` — start the Fastify API variant with watch mode on port 3001.
 - `npm run benchmark` — load-test the running API's `GET /health` endpoint
   with Autocannon (100 concurrent connections for 10 seconds). Start the API
   first with `npm run dev` or `npm start`.
