@@ -6,8 +6,11 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
+    "scale:dev": "tsx watch src/Scale-testing/index.ts",
+    "cpeak:dev": "tsx watch src/Scale-testing/cpeak.js",
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "node dist/index.ts",
+    "scale:start": "node dist/Scale-testing/index.ts",
     "benchmark": "autocannon -c 100 -d 10 http://127.0.0.1:3000/health",
     "typecheck": "tsc --noEmit",
     "contract:emit": "prisma contract emit",
@@ -19,8 +22,10 @@
   },
   "dependencies": {
     "@prisma/orm-postgres": "^8.0.0-rc.24",
+    "cpeak": "^2.11.0",
     "dotenv": "^18.0.10",
     "express": "^5.3.0",
+    "fastify": "^5.12.8",
     "nanoid": "^6.0.2",
     "zod": "^4.6.7"
   },
